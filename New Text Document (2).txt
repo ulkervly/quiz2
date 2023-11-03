@@ -1,0 +1,86 @@
+create database newquiz
+use newquiz
+create table Catagories(
+Id int identity primary key,
+Name NVARCHAR(30) unique not null)
+create table Tags(
+Id int identity primary key,
+Name NVARCHAR(30) unique not null)
+create table Users(
+Id int identity primary key,
+UserName NVARCHAR(40) not null unique,
+FullName NVARCHAR(40) not null,
+Age int,Check(Age>0 and Age<150))
+create Table Comments(
+Id int identity primary key,
+Content Nvarchar(250) not null,Check (Content>0 and Content<250),
+UsersId int foreign key references Users(Id),
+BlogsId int foreign key references Blogs(Id))
+create table Blogs (
+Id int identity primary key,
+Title NVARCHAR(50) check(Title>0 and Title<50),
+Description nvarchar(max) not null,
+UsersId2 int foreign key references Users(Id),
+CatagoriesId int foreign key references Catagories(Id),
+TagsId int foreign key references Tags(Id),
+)
+Alter table Blogs
+Add IsDeleted bit
+CREATE VIEW vw_Getinfo AS
+SELECT B.Title AS TitleName, U.UserName as UserName,U.FullName as FullName
+FROM Blogs B
+ JOIN Users U ON B.UsersId2 = U.Id
+--2
+  CREATE VIEW vw_Getinfo2 AS
+SELECT B.Title AS TitleName, C.Name As CatagoriesName
+FROM Blogs B
+ JOIN Catagories C ON B.UsersId2 = C.Id
+--3
+Create procedure USP_GetComments(@userId) As
+Select UsersId from Comments
+where UsersId=@userId
+
+
+--4
+Create procedure USP_GetUserblogs(@userId) As
+Select UsersId2 from Blogs
+where UsersId2=@userId
+--5
+Create Function Get_BlogsCount (@catagoryname)
+Returns NVARCHAR(50)
+Begin
+ Return select Count(Id)  from Blogs
+ End
+ --6
+ Create Function Get_Blogs (@username)
+Returns table
+Begin
+ Return select Blogs.Title  from Blogs
+ End
+ --7
+ CREATE OR ALTER TRIGGER trigger_t ON dbo.Blogs
+  INSTEAD OF DELETE AS
+BEGIN
+UPDATE dbo.Blogs
+  SET IsDeleted = 1
+  WHERE Id IN (SELECT Id FROM deleted);
+END
+insert into Catagories
+values 
+('Name1')
+insert into Tags
+
+values 
+('Namet')
+insert into Users
+values
+
+insert into Comments
+values 
+(5,2,3)
+
+
+
+
+
+
